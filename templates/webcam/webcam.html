@@ -1,0 +1,135 @@
+{% extends "webcam/index.html" %}
+{% load static %}
+{% block additionalcss %}
+    <link  href="{% static 'css/reset.min.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static  'css/style.css' %}" type="text/css" rel="stylesheet">
+    <script src="{% static 'js/adapter-latest.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div id="site">
+    <div id="videoBox" class="box">
+        <video id="localVideo" autoplay muted width="640" height="384"></video>  <!-- 修改为模型的输入大小 -->
+    </div>
+    <div id="bloc">
+        <div id="commentsBox" class="box">
+            <div>
+                <p><span></span><span></span><span></span><span></span></p>
+            </div>
+        </div>
+    </div>
+    <div id="suggBox" class="box"></div>
+</div>
+
+<script>
+   async function startVideo() {
+        try {
+            const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            const videoElement = document.getElementById('localVideo');
+            videoElement.srcObject = localStream;
+
+            // 设置视频尺寸为640x384
+            videoElement.width = 640;
+            videoElement.height = 384;
+
+            const socket = new WebSocket('ws://127.0.0.1:8000/ws/chat/');
+
+            socket.onopen = function () {
+                console.log('WebSocket connection opened');
+            };
+
+            socket.onerror = function (error) {
+                console.error('WebSocket error:', error);
+            };
+
+            socket.onclose = function () {
+                console.log('WebSocket connection closed');
+            };
+
+            // 创建一个 canvas 用于捕获视频帧
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            // 定期捕获视频帧并通过 WebSocket 发送
+            function captureFrame() {
+                if (socket.readyState === WebSocket.OPEN) {
+                    canvas.width = 640;
+                    canvas.height = 384;
+                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                    // 将视频帧转换为二进制数据并发送
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const reader = new FileReader();
+                            reader.onload = function () {
+                                socket.send(reader.result); // 发送帧的二进制数据
+                            };
+                            reader.readAsArrayBuffer(blob);
+                        }
+                    }, 'image/jpeg', 0.8);
+                }
+            }
+
+            // 每隔 100ms 捕获一次帧
+            setInterval(captureFrame, 100);
+
+            // 获取当前时间的函数
+            function getCurrentTime() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                return `${hours}:${minutes}:${seconds}`;
+            }
+
+            // 处理 WebSocket 返回的数据
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data); // 解析后端传递的 JSON 数据
+                const predictions = data.predictions;
+
+                // 更新页面中的 <span> 标签以显示预测的类和置信度
+                const spanElements = document.querySelectorAll("span");
+
+                predictions.forEach((prediction, index) => {
+                    const { class_name, confidence } = prediction;
+                    const confidenceText = `(${(confidence * 100).toFixed(1)}%)`;
+                    const currentTime = getCurrentTime();  // 获取当前时间
+
+                    if (index < spanElements.length) {
+                        // 更新第 index 个 span 标签的内容
+                        const span = spanElements[index];
+                        span.textContent = `${class_name} ${confidenceText} ${currentTime}`;
+                        span.style.color = "red"; // 设置文本颜色为红色
+                    }
+                });
+
+                // 绘制边界框
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                predictions.forEach(prediction => {
+                    const { class_name, confidence, bounding_box } = prediction;
+                    const [x_min, y_min, x_max, y_max] = bounding_box;
+                    context.strokeStyle = "lime";
+                    context.lineWidth = 2;
+                    context.strokeRect(x_min, y_min, x_max - x_min, y_max - y_min);
+
+                    // 绘制分类名称和置信度
+                    context.fillStyle = "red";
+                    context.font = "16px Arial";
+                    const text = `${class_name} (${(confidence * 100).toFixed(1)}%)`;
+                    context.fillText(text, x_min + 5, y_min - 5);
+                });
+            };
+        } catch (err) {
+            console.error('Error accessing camera or microphone:', err);
+            alert('Failed to access the camera or microphone. Please check your permissions.');
+        }
+    }
+
+    startVideo();
+</script>
+
+{% endblock %}
+{% block additionalscript %}
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+   <script src="{% static 'js/index.js' %}"></script>
+{% endblock %}

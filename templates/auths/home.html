@@ -1,0 +1,24 @@
+{% extends "webcam/index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron text-center">
+        <h1 class="display-4">welcome, {{ user.username }}!</h1>
+        <p class="lead">Welcome</p>
+
+        <!-- 用户头像 -->
+        <div class="profile-image">
+                <img src="{% static 'img.png' %}" class="img-thumbnail rounded-circle" alt="默认头像" width="150" height="150">
+        </div>
+
+        <hr class="my-4">
+
+        <!-- 用户信息 -->
+        <p><strong>Username：</strong> {{ user.username }}</p>
+        <p><strong>Email：</strong> {{ user.email }}</p>
+
+        <a class="btn btn-primary btn-lg" href="{% url 'logout' %}" role="button">logout</a>
+    </div>
+</div>
+{% endblock %}

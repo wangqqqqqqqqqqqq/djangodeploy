@@ -1,0 +1,115 @@
+{% extends "webcam/index.html" %}
+{% load static %}
+{% block additionalcss %}
+    <style>
+        /* 让表格和地图有间距 */
+        .ip-info {
+            margin-bottom: 20px;
+        }
+        /* 地图样式（放在表格上方） */
+        #map-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ddd;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+
+    <div class="container-fluid">
+    <div class="row">
+    {% include "capture/sidebar.html" %}
+    <div class="col-md-9">
+        <h1 class="text-center">IP Details</h1>
+
+        <!-- Google Map（放在表格上方） -->
+        <div id="map-container">
+            <h3>Location on Map</h3>
+            <div id="map"></div>
+        </div>
+
+        <!-- IP 详情表格 -->
+        <table class="table table-striped table-bordered ip-info">
+            <thead>
+                <tr class="info">
+                    <th>IP Address</th>
+                    <th>Region</th>
+                    <th>Country</th>
+                    <th>City</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>ISP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="ip">Loading...</td>
+                    <td id="region">Loading...</td>
+                    <td id="country">Loading...</td>
+                    <td id="city">Loading...</td>
+                    <td id="lat">Loading...</td>
+                    <td id="lon">Loading...</td>
+                    <td id="isp">Loading...</td>
+                </tr>
+            </tbody>
+        </table>
+         <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="/logs/stream_logs_ip?ip={{ ip }}" role="tab">📡 stream logs</a></li>
+                <li><a href="/logs/http_logs_ip?ip={{ ip }}" role="tab">🌐 HTTP logs</a></li>
+         </ul>
+        {% block moredetailes %}
+        {% endblock %}
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block additionalscript %}
+    <script>
+       window.initMap = function(lat = 0, lon = 0) {
+        var mapOptions = {
+            center: { lat: lat, lng: lon },
+            zoom: 10
+        };
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        new google.maps.Marker({
+            position: { lat: lat, lng: lon },
+            map: map,
+            title: "IP Location"
+        });
+    };
+
+    $(document).ready(function () {
+        let ip = "{{ ip|escapejs }}";  // 传递 Django 变量，防止 JS 解析错误
+        if (!ip) {
+            alert("No IP provided!");
+            return;
+        }
+
+        $.ajax({
+            url: `/logs/ip_details/${ip}/`,
+            method: "GET",
+            success: function (data) {
+                $("#ip").text(data.ip);
+                $("#region").text(data.region);
+                $("#country").text(data.country);
+                $("#city").text(data.city);
+                $("#lat").text(data.lat);
+                $("#lon").text(data.lon);
+                $("#isp").text(data.isp);
+
+                // 更新地图
+                initMap(parseFloat(data.lat), parseFloat(data.lon));
+            },
+            error: function () {
+                alert("Failed to fetch IP details.");
+            }
+        });
+    });
+    </script>
+
+{% endblock %}

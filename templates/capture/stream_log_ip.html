@@ -1,0 +1,80 @@
+{% extends "capture/ip_details.html" %}
+{% block moredetailes %}
+    <div class="container">
+    <h1 class="text-center">IP Network Logs</h1>
+
+    <!-- 日期选择 -->
+    <form id="date-form" method="POST" action="/logs/stream_logs_ip/">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label for="date" class="col-sm-2 col-form-label">Select Date:</label>
+            <div class="col-sm-4">
+                <input type="date" id="date" name="date" class="form-control"  required>
+            </div>
+            <input type="hidden" name="ip" value="{{ ip }}">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    <!-- 网络日志表格 -->
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr class="info">
+                <th>Timestamp</th>
+                <th>Source IP</th>
+                <th>Destination IP</th>
+                <th>Source Port</th>
+                <th>Destination Port</th>
+                <th>Protocol</th>
+                <th>IP Version</th>
+                <th>Cloud IP</th>
+                <th>Predicted Label</th>
+                <th>Log Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.source_ip }}</td>
+                <td>{{ row.destination_ip }}</td>
+                <td>{{ row.source_port }}</td>
+                <td>{{ row.destination_port }}</td>
+                <td>{{ row.protocol }}</td>
+                <td>{{ row.ip_version }}</td>
+                <td>{{ row.cloud_ip }}</td>
+                <td>{{ row.predicted_label }}</td>
+                <td>{{ row.log_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 分页按钮 -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li>
+                <a href="/logs/stream_logs_ip?date={{ date }}&ip={{ ip }}&page={{ pagination.prev_group }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% for p in pagination.pages %}
+                {% if p == "..." %}
+                    <li class="disabled"><span>...</span></li>
+                {% else %}
+                    <li {% if p == page %}class="active"{% endif %}>
+                        <a href="/logs/stream_logs_ip?date={{ date }}&ip={{ ip }}&page={{ p }}">{{ p }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            <li>
+                <a href="/logs/stream_logs_ip?date={{ date }}&ip={{ ip }}&page={{ pagination.next_group }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+{% endblock %}

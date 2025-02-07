@@ -1,0 +1,89 @@
+{% extends "webcam/index.html" %}
+{% load static %}
+{% block additionalcss %}
+    <style>
+    .dashboard-container {
+        margin-top: 30px;
+    }
+
+    /* 监控卡片 */
+    .monitor-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        text-align: center;
+        display: block;
+    }
+
+    .monitor-card:hover {
+        transform: scale(1.05);
+        box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .monitor-card img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+
+    /* 标题样式 */
+    .page-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* 自适应布局 */
+    @media (max-width: 768px) {
+        .monitor-card {
+            margin-bottom: 20px;
+        }
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid dashboard-container">
+        <h1 class="page-title">📊 monitoring centre</h1>
+
+    <div class="row">
+        <!-- Flow 监控 -->
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'index' %}" class="monitor-card">
+                <img src="{% static 'images/flow.png' %}" alt="Flow 监控">
+                <h3>Flow monitor</h3>
+                <p>Real-time traffic monitoring and analysis</p>
+            </a>
+        </div>
+
+        <!-- Traffic 监控 -->
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'cloud_log' %}" class="monitor-card">
+                <img src="{% static 'images/traffic.png' %}" alt="Traffic 监控">
+                <h3>Traffic monitor</h3>
+                <p>Network Traffic Tracking</p>
+            </a>
+        </div>
+
+        <!-- App 监控 -->
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'cloud_ip2' %}" class="monitor-card">
+                <img src="{% static 'images/app.png' %}" alt="App 监控">
+                <h3>App monitor</h3>
+                <p>Application behaviour monitoring</p>
+            </a>
+        </div>
+
+        <!-- Webcam 监控 -->
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'webcams' %}" class="monitor-card">
+                <img src="{% static 'images/webcam.png' %}" alt="Webcam 监控">
+                <h3>Webcam monitor</h3>
+                <p>Camera Remote Monitoring</p>
+            </a>
+        </div>
+    </div>
+    </div>
+{% endblock %}

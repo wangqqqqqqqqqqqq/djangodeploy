@@ -1,0 +1,45 @@
+{% load static %}
+<!-- 导航栏 -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- 标志和品牌名称 -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'indexpage' %}">
+                <!-- 静态文件 index.png -->
+               <img src="{% static 'index.png' %}" alt="Logo">
+                Talkative
+            </a>
+        </div>
+
+        <!-- 导航菜单 -->
+        <ul class="nav navbar-nav">
+            <li><a href="#">Solutions</a></li>
+ {% if   request.user.is_authenticated %}
+            <li><a href="{% url 'webcams' %}">Webcams</a></li>
+            <li><a href="{% url 'index' %}">Remote capture</a></li>
+            <li><a href="{% url 'cloud_log' %}">Netraffic</a></li>
+            <li><a href="{% url 'cloud_ip2' %}">App log</a></li>
+            <li><a href="{% url 'indexpage' %}">Resources</a></li>
+            {% else %}
+                <li><a href="#">Webcams</a></li>
+                <li><a href="#">Remote capture</a></li>
+                <li><a href="#">Netraffic</a></li>
+                <li><a href="#">App log</a></li>
+                <li><a href="#">Resources</a></li>
+            {% endif %}
+        </ul>
+
+        <!-- 右侧按钮 -->
+        <ul class="nav navbar-nav navbar-right">
+
+            {% if not request.user.is_authenticated %}
+                <li><a href="{% url "home" %}">Support portal</a></li>
+                <li><a href="{% url 'login' %}">Sign in</a></li>
+            {% else %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% endif %}
+            <li><a href="#" class="btn btn-warning navbar-btn">Book Demo</a></li>
+            <li><a href="#" class="btn btn-primary navbar-btn">Free Tour</a></li>
+        </ul>
+    </div>
+</nav>

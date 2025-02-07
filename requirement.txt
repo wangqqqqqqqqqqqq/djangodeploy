@@ -1,0 +1,22 @@
+# Django 及其依赖
+django>=4.2,<5.0
+djangorestframework  # Django REST API 支持
+channels  # Django Channels 支持 WebSocket
+uvicorn[standard]  # ASGI 服务器
+# 数据库连接（可选，根据你的需求）
+psycopg2-binary  # PostgreSQL 驱动（如果使用 PostgreSQL）
+mysqlclient  # MySQL 驱动（如果 Hive 使用 MySQL Metastore）
+pyhive[hive]  # PyHive 及其依赖
+thrift  # PyHive 依赖的 Thrift
+thrift-sasl  # 用于 SASL 认证
+sasl  # 认证支持
+pandas  # 数据分析（用于处理 Hive 数据）
+sqlalchemy  # ORM（可选）
+pymysql  # 另一种 MySQL 连接方式（如果 Metastore 是 MySQL）
+# Ultralytics YOLO（目标检测）
+ultralytics  # YOLO v8 及其依赖
+# 其他实用工具
+numpy  # 机器学习库
+opencv-python-headless  # 计算机视觉（用于 YOLO）
+pillow  # 处理图片
+requests  # 发送 HTTP 请求

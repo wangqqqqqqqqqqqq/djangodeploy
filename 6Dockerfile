@@ -1,0 +1,37 @@
+# 1️⃣ 使用 Python 3.10 作为基础镜像
+FROM python:3.10
+
+# 2️⃣ 设置工作目录
+WORKDIR /app
+
+# 3️⃣ 复制项目
+COPY ./talktive ./talktive
+COPY ./appinfo ./appinfo
+COPY ./auths ./auths
+COPY ./defence ./defence
+COPY ./logview ./logview
+COPY ./static ./static
+COPY ./staticfiles ./staticfiles
+COPY ./templates ./templates
+COPY ./webcam ./webcam
+COPY ./requirement.txt ./requirement.txt
+COPY ./manage.py ./manage.py
+COPY ./ADFA-LD+Syscall+List.txt ./ADFA-LD+Syscall+List.txt
+COPY ./best.pt ./best.pt
+# 4️⃣ 安装 Python 依赖
+RUN pip install --no-cache-dir -r requirement.txt
+
+# 5️⃣ 设置环境变量（放在 migrate 之前）
+ENV MYSQL_DB=talktive
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=123456
+ENV MYSQL_HOST=mysql
+ENV MYSQL_PORT=3306
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+
+# 6️⃣ 运行 Django 迁移（确保可以连接 MySQL）
+RUN python manage.py migrate
+
+# 7️⃣ 运行 Django
+CMD ["uvicorn", "talktive.asgi:application", "--host", "0.0.0.0", "--port", "8000"]

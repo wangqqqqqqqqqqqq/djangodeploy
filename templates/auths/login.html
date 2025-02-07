@@ -1,0 +1,82 @@
+{% extends "webcam/index.html" %}
+{% load static %}
+
+{% block additionalcss %}
+    <link href="{% static  'css/style2.css' %}" type="text/css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+     <div class="materialContainer">
+        <div class="box">
+            <form method="post" action="{% url 'login' %}">
+                 {% csrf_token %}
+                <div class="title">login</div>
+                 {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="input">
+                    <label for="username">username</label>
+                    <input type="text" name="username" id="username">
+                    <span class="spin"></span>
+                </div>
+                <div class="input">
+                    <label for="password">password</label>
+                    <input type="password" name="password" id="password">
+                    <span class="spin"></span>
+                </div>
+                <div class="button login">
+                    <button type="submit">
+                        <span>login</span>
+                        <i class="fa fa-check"></i>
+                    </button>
+                </div>
+            </form>
+            <a href="javascript:" class="pass-forgot">fogot password？</a>
+        </div>
+
+        <div class="overbox">
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div class="material-button alt-2">
+                    <span class="shape"></span>
+                </div>
+                <div class="title">register</div>
+                 {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+               <div class="input">
+                    <label for="user">username</label>
+                    <input type="text" name="user" id="user">
+                    <span class="spin"></span>
+                </div>
+                <div class="input">
+                    <label for="pass">password</label>
+                    <input type="password" name="pass" id="pass">
+                    <span class="spin"></span>
+                </div>
+
+                <div class="input">
+                    <label for="email">email</label>
+                    <input type="email" name="email" id="email">
+                    <span class="spin"></span>
+                </div>
+                <div class="button">
+                    <button type="submit">
+                        <span>register</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+     </div>
+{% endblock %}
+{% block additionalscript %}
+    <script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script src="{% static  'js/index2.js' %}"></script>
+{% endblock %}

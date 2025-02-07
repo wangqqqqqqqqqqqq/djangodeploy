@@ -1,0 +1,36 @@
+{% extends "webcam/index.html" %}
+{%  load static  %}
+{% block additionalcss %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="content-fluid">
+        <div class="row">
+            {% include "applog/sidebar.html" %}
+              <div class="col-md-9">
+                <h1 class="text-center">Cloud IP List</h1>
+
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr class="info">
+                            <th>Cloud IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                        <tr>
+                            <td>
+                                    {{ row.cloudip }}
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+        </div>
+
+</div>
+{% endblock %}
