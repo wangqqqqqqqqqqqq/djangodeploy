@@ -1,4 +1,5 @@
 import json
+import os
 
 import msgpack
 from django.contrib.auth.decorators import login_required
@@ -45,9 +46,12 @@ class PacketCapture(AsyncWebsocketConsumer):
 
     async def connect(self):
         # 接收 WebSocket 连接
+        redis_host = os.getenv("REDIS_HOST", "127.0.0.1")
+        redis_port = os.getenv("REDIS_PORT", "6379")
         await self.accept()
+        redis_url = f"redis://{redis_host}:{redis_port}"
         self.redis = await aioredis.from_url(
-            "redis://127.0.0.1:6379",
+            redis_url,
             decode_responses=True
         )  # 初始化 Redis 连接
         print("Redis connection established.")

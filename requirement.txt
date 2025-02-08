@@ -9,7 +9,11 @@ mysqlclient  # MySQL 驱动（如果 Hive 使用 MySQL Metastore）
 pyhive[hive]  # PyHive 及其依赖
 thrift  # PyHive 依赖的 Thrift
 thrift-sasl  # 用于 SASL 认证
-sasl  # 认证支持
+cryptography
+msgpack
+aioredis
+httpx
+opencv-python-headless
 pandas  # 数据分析（用于处理 Hive 数据）
 sqlalchemy  # ORM（可选）
 pymysql  # 另一种 MySQL 连接方式（如果 Metastore 是 MySQL）
@@ -20,3 +24,5 @@ numpy  # 机器学习库
 opencv-python-headless  # 计算机视觉（用于 YOLO）
 pillow  # 处理图片
 requests  # 发送 HTTP 请求
+whitenoise
+channels_redis

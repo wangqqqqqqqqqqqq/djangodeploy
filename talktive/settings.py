@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-55m_#_bunt34eq)^z-_i=akc+jco72dswch$xj6wl*_m@96py2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["13.233.119.203"]
 
 MYSQL_DB = os.getenv("MYSQL_DB", "talktive")
 MYSQL_USER = os.getenv("MYSQL_USER", "root")
@@ -130,19 +130,19 @@ DATABASES = {
 }
 HIVE_DATABASES = {
     "hive1": {
-        "HOST": "65.2.69.197",
+        "HOST": "172.31.10.138",
         "PORT": 10000,
         "DATABASE": "adfalogs",
         "AUTH": "NONE"  # 无认证
     },
     "hive2": {
-        "HOST": "3.110.103.202",
+        "HOST": "172.31.6.140",
         "PORT": 10000,
         "DATABASE": "http_log",
         "AUTH": "NONE"  # 无认证
     },
     "hive3":{
-        "HOST": "13.233.119.203",
+        "HOST": "172.31.5.61",
         "PORT": 10000,
         "DATABASE": "network_monitoring",
         "AUTH": "NONE" # 无认证
